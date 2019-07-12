@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "incremental": true,
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "target": "es2018",
+    "strict": true,
+    "noUnusedLocals": true,
+  },
+  "lib": ["es2018"],
+  "include": [
+    "./src",
+  ],
+  "exclude": [
+    "dist/",
+    "node_modules/",
+  ],
+}
