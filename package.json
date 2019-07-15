@@ -1,7 +1,7 @@
 {
   "name": "Mermanatee",
   "version": "0.0.1",
-  "description": "A library for some common React components (but not Odyssey)",
+  "description": "A library for some common Okta React components (but not Odyssey)",
   "author": "Okta, Inc.",
   "license": "Apache-2.0",
   "dependencies": {
