@@ -10,12 +10,12 @@ export class SafetyFirst<P, S> extends React.Component<P, S> {
     this.unMounted_ = false;
     this.isMounted_ = false;
     const setState_ = SafetyFirst.prototype.setState;
-    this.setState = (...args) => {
+    this.setState = (...args2) => {
       if (this.unMounted_ || !this.isMounted_) {
         return false;
       }
 
-      setState_.call(this, ...args);
+      setState_.call(this, ...args2);
       return true;
     };
   }
