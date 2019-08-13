@@ -6,22 +6,24 @@ import { SafetyFirst } from './SafetyFirst';
 let dropdownId= 0;
 const dropdowns: {[s: string]: Dropdown} = {};
 
-// only add one listener for all dropdowns
-document.addEventListener('keydown', e => {
-  const { key } = e;
-  if (key !== 'Escape') {
-    return;
-  }
-  Object.keys(dropdowns).forEach(id => dropdowns[id].close());
-});
+if (typeof window !== 'undefined') {
+  // only add one listener for all dropdowns
+  document.addEventListener('keydown', e => {
+    const { key } = e;
+    if (key !== 'Escape') {
+      return;
+    }
+    Object.keys(dropdowns).forEach(id => dropdowns[id].close());
+  });
 
-document.addEventListener('click', (e: MouseEvent) => {
-  if (e.which !== 1) {
-    // Only care about left click
-    return;
-  }
-  Object.keys(dropdowns).forEach(id => dropdowns[id].onDocumentClick(e));
-});
+  document.addEventListener('click', (e: MouseEvent) => {
+    if (e.which !== 1) {
+      // Only care about left click
+      return;
+    }
+    Object.keys(dropdowns).forEach(id => dropdowns[id].onDocumentClick(e));
+  });
+}
 
 export type DropdownProps = {
   button?: React.ReactElement<any>;
