@@ -5,8 +5,8 @@ export class SafetyFirst<P, S> extends React.Component<P, S> {
   isMounted_: boolean;
   public setState: typeof React.Component.prototype.setState;
 
-  constructor (props: P) {
-    super(props);
+  constructor (props: P, ...args) {
+    super(props, ...args);
     this.unMounted_ = false;
     this.isMounted_ = false;
     const setState_ = SafetyFirst.prototype.setState;
