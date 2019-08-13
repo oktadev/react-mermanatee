@@ -47,6 +47,8 @@ const webpackConfig = {
     publicPath: '/',
     libraryTarget: 'umd',
     library: 'Mermanatee',
+    // lame workaround to get server side rendering working. see https://github.com/webpack/webpack/issues/6784
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   module: {
     rules: [
