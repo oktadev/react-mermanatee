@@ -1,17 +1,22 @@
 import React from 'react';
 
-export class SafetyFirst<P, S> extends React.Component<P, S> {
-  unMounted_: boolean;
-  isMounted_: boolean;
+export class SafetyFirst<P, S, SS=any> extends React.Component<P, S, SS> {
+  unMounted_: boolean = false;
+  isMounted_: boolean = false;
   public setState: typeof React.Component.prototype.setState;
 
   constructor (props: P, ...args) {
     super(props, ...args);
-    this.unMounted_ = false;
-    this.isMounted_ = false;
     const setState_ = SafetyFirst.prototype.setState;
     this.setState = (...args2) => {
+      const [ state, cb ] = args2;
+      if (!this.isMounted_ && !this.unMounted_) {
+        this.state = Object.assign({}, this.state, state);
+      }
       if (this.unMounted_ || !this.isMounted_) {
+        if (typeof cb === 'function') {
+          cb();
+        }
         return false;
       }
 

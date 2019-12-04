@@ -1,0 +1,26 @@
+.sft-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  animation-delay: .5s;
+  opacity: 0;
+  animation: fade-in .5s forwards;
+  animation-iteration-count: 1;
+  .sft-title {
+    text-align: center;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.sft-loading-spinner {
+  color: #337ab7;
+}
