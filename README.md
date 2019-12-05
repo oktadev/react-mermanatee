@@ -1,6 +1,6 @@
 # React-mermanatee
 
-Shared Okta React components (but not Odyssey).  Used in ~ScaleFT~ Advanced Server Access.
+Shared Okta React components (but not Odyssey).  Used in ~ScaleFT~ Advanced Server Access and ~Azuqua~ Workflows.
 
 [![Build Status](https://travis-ci.org/oktadeveloper/react-mermanatee.svg?branch=master)](https://travis-ci.org/oktadeveloper/react-mermanatee)
 
