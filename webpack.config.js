@@ -4,8 +4,8 @@ const path = require('path');
 const webpack = require('webpack');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const ManifestPlugin = require('webpack-manifest-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
@@ -92,7 +92,7 @@ const plugins = [
 
 if (env === "production") {
   webpackConfig.optimization.minimizer = [
-    new UglifyJsPlugin({
+    new TerserPlugin({
       cache: true,
       parallel: true,
       sourceMap: true,
