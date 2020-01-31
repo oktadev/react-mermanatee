@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import classNames from 'classnames';
 
-import { SafetyFirst } from './SafetyFirst';
-
 let dropdownId= 0;
-const dropdowns: {[s: string]: Dropdown} = {};
+const dropdowns: {
+  [id: string]: {
+    close: Function;
+    maybeClose: Function;
+  };
+} = {};
 
 if (typeof window !== 'undefined') {
   // only add one listener for all dropdowns
@@ -21,83 +24,73 @@ if (typeof window !== 'undefined') {
       // Only care about left click
       return;
     }
-    Object.keys(dropdowns).forEach(id => dropdowns[id].onDocumentClick(e));
-  });
-}
-
-export type DropdownProps = {
-  button?: React.ReactElement<any>;
-  children (): React.ReactNode;
-  className?: string;
-  menuClassName?: string;
-  disabled?: boolean;
-  id?: string;
-  title: string;
-  style?: React.CSSProperties;
-};
-
-export class Dropdown extends SafetyFirst<DropdownProps, {isOpen: boolean}> {
-  id: number = dropdownId++;
-  button = React.createRef<HTMLDivElement>();
-  state = {
-    isOpen: false,
-  };
-
-  toggle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    this.setState({ isOpen: !this.state.isOpen });
-  }
-
-  close () {
-    this.state.isOpen && this.setState({ isOpen: false });
-  }
-
-  onDocumentClick (e: MouseEvent) {
-    const { current } = this.button;
-    if (!current) {
-      return;
-    }
-    const { target } = e;
+    const target = e.target;
     // Not all EventTarget are HTMLElements!
     // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
     if (!(target instanceof HTMLElement)) {
       return;
     }
-    // Don't close if click is in our dropdown
-    if (current.contains(target) || current === target) {
-      return;
-    }
-    // 🦃🦃🦃🦃
-    // Wait to close, otherwise the items won't exist anymore and their onclick handlers won't fire
-    setTimeout(() => this.close(), 0);
-  }
 
-  componentDidMount () {
-    super.componentDidMount();
-    dropdowns[this.id] = this;
-  }
-
-  componentWillUnmount () {
-    super.componentWillUnmount();
-    delete dropdowns[this.id];
-  }
-
-  render () {
-    const { isOpen } = this.state;
-    const { className, menuClassName, id, children, disabled, style } = this.props;
-
-    const title = this.props.title || (disabled ? 'No available actions.' : undefined);
-    const firstChild = this.props.button
-      ? React.cloneElement(this.props.button, { title, disabled, 'data-toggle': 'dropdown' })
-      : <button data-toggle="dropdown" disabled={disabled}>
-        { title }
-      </button>;
-
-    return <div id={id} className={classNames(className || 'dropdown', { isOpen, disabled })} style={style}>
-      <div ref={this.button} onClick={disabled ? undefined : this.toggle}>{ firstChild }</div>
-      { isOpen && <ul className={classNames(menuClassName || 'dropdown-menu', { isOpen, disabled })}>
-        { children() }
-      </ul> }
-    </div>;
-  }
+    Object.keys(dropdowns).forEach(id => dropdowns[id].maybeClose());
+  });
 }
+
+type anyFunction = (...args: any[]) => any;
+export interface DropdownProps extends React.ComponentProps<'div'> {
+  renderButton: (onClick: anyFunction, title: React.ReactNode, disabled: boolean) => React.ReactNode;
+  children (): React.ReactNode;
+  disabled?: boolean;
+  menuClassName?: string;
+}
+
+export const useDropdown = (): [boolean, () => void] => {
+  const [ isOpen, setOpen ] = React.useState<boolean>(false);
+
+  // a boolean in a closure won't work, so have React keep a Object up to date
+  const isOpenRef = React.useRef(isOpen);
+  React.useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [ isOpen ]);
+
+  // register this dropdown with the global handler
+  React.useEffect(() => {
+    const id = dropdownId++;
+    const close = () => {
+      // can be called from a timeout (after unmmounting)
+      if (!dropdowns[id]) {
+        return;
+      }
+      setOpen(false);
+    };
+
+    dropdowns[id] = {
+      close,
+      maybeClose: () => {
+        if (!isOpenRef.current) {
+          return;
+        }
+        // 🦃🦃🦃🦃
+        // Wait to close, otherwise our children probably won't exist anymore and their onclick handlers can't fire
+        setTimeout(close, 0);
+      }
+    };
+    // unregister after unmounting
+    return () => {
+      delete dropdowns[id];
+    };
+  }, []);
+  // this function is redeclared for better or worse every render...
+  return [ isOpen, () => setOpen(!isOpen)];
+};
+
+// A reference implementation for a dropdown...
+export const Dropdown: FunctionComponent<DropdownProps> = ({ className="dropdown", menuClassName="dropdown-menu", children, disabled, renderButton, title, ...rest }) => {
+  const [ isOpen, onClick ] =  useDropdown();
+
+  return <div className={classNames(className, { isOpen, disabled })} {...rest}>
+    { renderButton(onClick, title, !!disabled) }
+    { isOpen && <ul className={classNames(menuClassName, { isOpen, disabled })}>
+      { children() }
+    </ul> }
+  </div>;
+};
