@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json.schemastore.org/cosmos-config",
+  "watchDirs": ["src"],
+  "webpack": {
+    "configPath": "./webpack.config.demo.js"
+  }
+}
