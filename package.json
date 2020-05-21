@@ -27,7 +27,9 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "2.x",
     "file-loader": "5.x",
+    "html-webpack-plugin": "^3.2.0",
     "react": "16.x",
+    "react-cosmos": "^5.0.11",
     "react-dom": "16.x",
     "terser-webpack-plugin": "2.x",
     "ts-loader": "^6.0.4",
@@ -55,7 +57,7 @@
     "lint": "eslint --ext=.js,.jsx,.ts,.tsx ./src ./demo",
     "test": "yarn run lint",
     "watch": "NODE_ENV=development webpack --config webpack.config.js --progress --colors --watch",
-    "demo": "webpack-dev-server --config webpack.config.demo.js --progress --colors --watch",
+    "demo": "yarn run cosmos",
     "prepublishOnly": "yarn build"
   },
   "main": "./dist/main.js",

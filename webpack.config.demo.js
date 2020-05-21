@@ -5,6 +5,7 @@ const webpack = require('webpack');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 const buildDir = path.resolve(__dirname, 'dist');
@@ -13,8 +14,6 @@ module.exports = {
   mode: env,
   entry: {
     main: './src/index.ts',
-    demo: './demo/demo.tsx',
-    html: './demo/index.html',
   },
   devServer: {
     contentBase: './dist',
@@ -54,7 +53,7 @@ module.exports = {
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [`${buildDir}/*` ],
     }),
-    new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("production") }),
+    new HtmlWebpackPlugin({}),
     new ManifestPlugin(),
   ]
 };
