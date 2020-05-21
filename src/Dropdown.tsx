@@ -27,7 +27,7 @@ if (typeof window !== 'undefined') {
     const target = e.target;
     // Not all EventTarget are HTMLElements!
     // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
-    if (!(target instanceof HTMLElement)) {
+    if (!(target instanceof Element)) {
       return;
     }
 
